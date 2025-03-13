@@ -1,5 +1,63 @@
 {%extends 'base.html'%} {%block content%}
 <div class="jumbotron">
-  <h1>Soon...</h1>
+  <h1>Products</h1>
 </div>
-{%endblock%}
+<div class="container">
+  <div class="row">
+    {%for product in product_cards.items%}
+    <div class="col-12 col-md-3 mb-4">
+      <div class="card" style="width: 100%">
+        <img
+          class="card-img-top"
+          src="{{url_for('static', filename = 'product_picture/'+ product.profile_image)}}"
+          alt="Product image"
+        />
+        <div class="card-body">
+          <a href=""><h5 class="card-title">{{product.name}}</h5></a>
+          <p class="card-text">
+            Sold by
+            <a
+              href="{{url_for('users.user_products', username = product.author.username )}}"
+              >{{product.author.username}}</a
+            >
+          </p>
+          <p class="card-text">{{product.price}}</p>
+          <a href="#" class="btn btn-primary">See more</a>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted"
+            >Date of publication {{product.date.strftime('%Y-%m-%d in
+            %H:%M:%S')}}</small
+          >
+        </div>
+      </div>
+    </div>
+
+    {%endfor%}
+  </div>
+  <div>
+    <nav class="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {%for pag_num in product_cards.iter_pages(left_edge=1, left_current=1,
+        right_current=2,right_edge=1)%} {%if pag_num == product_cards.page%}
+        <li class="page-item disabled">
+          <a
+            class="page-link"
+            href="{{url_for('core.marketplace', page = pag_num)}}"
+            >{{pag_num}}</a
+          >
+        </li>
+        {%else%}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="{{url_for('core.marketplace', page = pag_num)}}"
+            >{{pag_num}}</a
+          >
+        </li>
+        {%endif%} {%endfor%}
+      </ul>
+    </nav>
+  </div>
+  {%endblock%}
+</div>

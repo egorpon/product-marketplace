@@ -1,7 +1,31 @@
 {%extends 'base.html'%} {%block content%}
-<form action="" method="POST">
-  <div class="container col-md-6">
-    <h1>Your role is {{current_user.roles[0].name}}</h1>
-  </div>
-</form>
+<div align="center" class="jumbotron">
+  <h1>Welcome to the page Mr.{{current_user.username}}</h1>
+  <img
+    src="{{url_for('static', filename = 'profile_picture/' + current_user.profile_image)}}"
+  />
+</div>
+<div class="container">
+  <form action="" method="POST" enctype="multipart/form-data">
+    {{form.hidden_tag()}}
+    <div class="from-group">
+      {{form.email.label()}}{{form.email(class='form-control')}}
+    </div>
+    <br />
+    <div class="from-group">
+      {{form.username.label()}}{{form.username(class='form-control')}}
+    </div>
+    <br />
+    <div class="from-group">
+      {{form.role.label()}}{{form.role(class='form-control')}}
+    </div>
+    <br />
+    <div class="from-group">
+      {{form.account_picture.label()}}{{form.account_picture(class='form-control')}}
+    </div>
+    <br />
+    <div class="from-group">{{form.submit(class='btn btn-primary')}}</div>
+  </form>
+</div>
+
 {%endblock%}

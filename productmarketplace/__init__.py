@@ -21,5 +21,7 @@ login_manager.login_view = 'users.login'
 
 from productmarketplace.core.views import core
 from productmarketplace.users.views import users
+from productmarketplace.product_card.views import product
 app.register_blueprint(core)
 app.register_blueprint(users)
+app.register_blueprint(product)

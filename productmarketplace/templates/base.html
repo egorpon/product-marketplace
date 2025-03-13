@@ -43,7 +43,9 @@
         {% if current_user.is_authenticated %} {%if
         current_user.has_role('seller')%}
         <li class="nav-item">
-          <a href="#" class="nav-link">Post Product</a>
+          <a href="{{url_for('product.post_product')}}" class="nav-link"
+            >Post Product</a
+          >
         </li>
         {%endif%}
         <li class="nav-item">

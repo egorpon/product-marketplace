@@ -1,0 +1,26 @@
+{%extends 'base.html'%} {%block content%}
+<div class="jumbotron">
+  <div class="container">
+    <form action="" method="POST" enctype="multipart/form-data">
+      {{form.hidden_tag()}}
+      <div class="from-group">
+        {{form.title.label()}}{{form.title(class='form-control')}}
+      </div>
+      <br />
+      <div class="from-group">
+        {{form.price.label()}}{{form.price(class='form-control')}}
+      </div>
+      <br />
+      <div class="from-group">
+        {{form.description.label()}}{{form.description(class='form-control')}}
+      </div>
+      <br />
+      <div class="from-group">
+        {{form.product_picture.label()}}{{form.product_picture(class='form-control')}}
+      </div>
+      <br />
+      <div class="from-group">{{form.submit(class='btn btn-primary')}}</div>
+    </form>
+  </div>
+</div>
+{%endblock%}
