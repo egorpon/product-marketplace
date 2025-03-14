@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for, request
+from flask import Blueprint, redirect, render_template, url_for, request, abort, flash
 from flask_login import current_user, login_required
 from productmarketplace.product_card.forms import ProductForm
 from productmarketplace.models import Product
@@ -29,4 +29,56 @@ def post_product():
     return render_template('post_product.html', form = form)
 
 
-# @product.route('/')
+@product.route('/<int:product_id>')
+@login_required
+def products(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('product.html', product=product)
+
+
+@product.route('/<int:product_id>/update', methods = ['GET','POST'])
+@login_required
+def update(product_id):
+    product_card = Product.query.get_or_404(product_id)
+
+    if product_card.author !=current_user:
+        abort(403)
+
+
+    form = ProductForm()
+    
+    if form.validate_on_submit():
+        if form.product_picture.data:
+            pic = add_product_picture(form.product_picture.data, product_card.name)
+            product_card.profile_image = pic
+        
+        
+        product_card.name = form.title.data
+        product_card.price = form.price.data
+        product_card.description = form.description.data
+        db.session.commit()
+        return redirect(url_for('product.products', product_id=product_card.id))
+
+
+
+    form.title.data = product_card.name
+    form.description.data = product_card.description
+    form.price.data = product_card.price
+
+    return render_template('post_product.html', form=form)
+
+
+
+@product.route('/<int:product_id>/delete', methods = ['GET','POST'])
+@login_required
+def delete_product(product_id):
+    print('function call')
+    product_card = Product.query.get_or_404(product_id)
+        
+    if product_card.author != current_user:
+        abort(403)
+
+    db.session.delete(product_card)
+    db.session.commit()
+    flash('Deleted succesfully!')
+    return redirect(url_for('core.marketplace'))

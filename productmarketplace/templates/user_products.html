@@ -17,7 +17,9 @@
           alt="Product image"
         />
         <div class="card-body">
-          <a href=""><h5 class="card-title">{{product.name}}</h5></a>
+          <a href="{{url_for('product.products', product_id = product.id)}}"
+            ><h5 class="card-title">{{product.name}}</h5></a
+          >
           <p class="card-text">
             Sold by
             <b>{{product.author.username}}</b>

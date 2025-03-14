@@ -1,7 +1,22 @@
 {%extends 'base.html'%} {%block content%}
 <div class="jumbotron">
   <h1>Products</h1>
+  <form method="POST">
+    {% for author in authors %}
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="author"
+        value="{{author}}"
+      />
+      <label class="form-check-label"> {{ author }} </label>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </form>
 </div>
+
 <div class="container">
   <div class="row">
     {%for product in product_cards.items%}
@@ -13,7 +28,9 @@
           alt="Product image"
         />
         <div class="card-body">
-          <a href=""><h5 class="card-title">{{product.name}}</h5></a>
+          <a href="{{url_for('product.products', product_id = product.id)}}"
+            ><h5 class="card-title">{{product.name}}</h5></a
+          >
           <p class="card-text">
             Sold by
             <a
@@ -22,7 +39,11 @@
             >
           </p>
           <p class="card-text">{{product.price}}</p>
-          <a href="#" class="btn btn-primary">See more</a>
+          <a
+            href="{{url_for('product.products', product_id = product.id)}}"
+            class="btn btn-primary"
+            >See more</a
+          >
         </div>
         <div class="card-footer">
           <small class="text-muted"

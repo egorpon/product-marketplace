@@ -25,9 +25,9 @@ def register():
         user = User(email=form.email.data,
                     username=form.username.data,
                     password=form.password.data,
+                    role_id= role.id
                     )
         
-        user.roles.append(role)
         db.session.add(user)
         db.session.commit()
         print('Thanks for registration!')
@@ -72,8 +72,7 @@ def account():
         current_user.email =  form.email.data
 
         role = db.session.get(Role,form.role.data)
-        current_user.roles.remove(current_user.roles[0])
-        current_user.roles.append(role)
+        current_user.role_id = role.id
         
         db.session.commit()
         flash('User Account Updated!')
@@ -81,7 +80,7 @@ def account():
     
     form.email.data = current_user.email
     form.username.data = current_user.username
-    form.role.data = current_user.roles[0].id
+    form.role.data = current_user.role_id
 
 
     profile_img = url_for('static', filename = 'profile_picture/' + current_user.profile_image )
