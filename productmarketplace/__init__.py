@@ -3,8 +3,23 @@ from flask import Flask, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_required
+import stripe
+from dotenv import load_dotenv, dotenv_values
+
+
+config = dotenv_values('.env')
+print(config)
 
 app = Flask(__name__)
+
+STRIPE_PUBLIC_KEY=config.get('STRIPE_PUBLIC_KEY','')
+STRIPE_SECRET_KEY= config.get('STRIPE_SECRET_KEY','')
+
+
+stripe.api_key = STRIPE_SECRET_KEY
+
+
+
 
 app.config['SECRET_KEY'] = 'mysecretkey'
 

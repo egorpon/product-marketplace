@@ -17,7 +17,7 @@ class RegisterForm(FlaskForm):
     email = EmailField('Email:', validators=[DataRequired(), Email()])
     username = StringField('Username:', validators=[DataRequired()])
     role = SelectField('Who are you?',coerce=int, choices=[], validators= [DataRequired()])
-    password = PasswordField('Password:' ,validators=[DataRequired(), EqualTo('pass_confirm', message='Passwords doesnt match')])
+    password = PasswordField('Password:' ,validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords doesn't match")])
     pass_confirm = PasswordField('Confirm Passowrd:', validators=[DataRequired()])
     submit = SubmitField('Register')
 

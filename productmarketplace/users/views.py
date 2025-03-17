@@ -4,7 +4,6 @@ from productmarketplace import db
 from productmarketplace.users.forms import RegisterForm, LoginForm, UpdateUserForm
 from productmarketplace.models import User, Role, Product
 from productmarketplace.users.picture_handler import add_profile_picture
-from sqlalchemy.exc import IntegrityError
 
 users = Blueprint('users',__name__)
 
@@ -23,22 +22,28 @@ def register():
     form.role.choices = [(role.id,role.name) for role in Role.query.all()]
 
     if form.validate_on_submit():
-        try:
+        existing_email = User.query.filter_by(email = form.email.data).first()
+        existing_username = User.query.filter_by(username = form.username.data).first()
+        if existing_email:
+            flash('Email has been registered!','danger')
+        
+        elif existing_username:
+            flash('Username has been registered!','danger')
+        else:    
             role = db.session.get(Role,form.role.data)
             user = User(email=form.email.data,
-                            username=form.username.data,
-                            password=form.password.data,
-                            role_id= role.id
-                            )
-                
+                        username=form.username.data,
+                        password=form.password.data,
+                        role_id= role.id
+                        )
+            
             db.session.add(user)
             db.session.commit()
             flash('Thanks for registration!','success')
             return redirect(url_for('users.login'))
-        except IntegrityError:
-            db.session.rollback()
-            flash('Email or Username already registered', 'danger')
-
+    for field,errors in form.errors.items():
+        for error in errors:
+            flash(error,'danger')
     return render_template('register.html', form=form)
 
 @users.route('/login', methods = ['GET', 'POST'])

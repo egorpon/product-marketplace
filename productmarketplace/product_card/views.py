@@ -4,6 +4,8 @@ from productmarketplace.product_card.forms import ProductForm
 from productmarketplace.models import Product
 from productmarketplace.product_card.picture_product_handler import add_product_picture
 from productmarketplace import db
+from productmarketplace import STRIPE_PUBLIC_KEY
+import stripe, os
 
 product = Blueprint('product', __name__)
 
@@ -34,12 +36,48 @@ def post_product():
 
     return render_template('post_product.html', form = form)
 
-
 @product.route('/<int:product_id>')
 @login_required
 def products(product_id):
     product = Product.query.get_or_404(product_id)
-    return render_template('product.html', product=product)
+    return render_template('product.html', product=product, public_key=STRIPE_PUBLIC_KEY )
+
+
+@product.route('/success')
+def thankyou():
+    return render_template('success.html')
+
+@product.route('/cancel')
+def cancel():
+    return render_template('cancel.html')
+
+@product.route('/<int:product_id>/create-checkout-session', methods = ['POST'])
+def create_checkout_session(product_id):
+    product = Product.query.get_or_404(product_id)
+    success_url = os.getenv('SUCCESS_URL', 'https://product-marketplace-92d5d080cdc2.herokuapp.com/success')
+    cancel_url = os.getenv('CANCEL_URL', 'https://product-marketplace-92d5d080cdc2.herokuapp.com/cancel')
+    session = stripe.checkout.Session.create(
+    line_items=[{
+        'price_data':{
+        'currency':'usd',
+        'product_data':{
+            'name':product.name,
+            'images':['https://media1.tenor.com/m/jUhmP8zSw54AAAAd/%D0%B1%D1%83%D0%B4%D0%B0%D0%BD%D0%BE%D0%B2-sigma.gif'],
+            'description':f'Purchasing {product.name}',
+            'tax_code': 'txcd_99999999'	
+            },
+        'unit_amount':int(product.price)*100},
+        
+        'quantity':1
+        
+    }],
+    mode = 'payment',
+    success_url=success_url,
+    cancel_url=cancel_url)
+
+    return redirect(session.url, code=303)
+
+
 
 
 @product.route('/<int:product_id>/update', methods = ['GET','POST'])
