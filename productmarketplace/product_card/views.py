@@ -11,8 +11,8 @@ product = Blueprint('product', __name__)
 @product.route('/post_product', methods = ['GET', 'POST'])
 @login_required
 def post_product():
+
     form = ProductForm()
-    
     if form.validate_on_submit():
         product = Product(user_id=current_user.id,
                           name = form.title.data,
@@ -21,11 +21,17 @@ def post_product():
         if form.product_picture.data:
             picture_product = add_product_picture(form.product_picture.data, product.name)
             product.profile_image = picture_product
+
         
         db.session.add(product)
         db.session.commit()
+        flash('Product added successfully!', 'success')
         return redirect(url_for('core.marketplace'))
     
+    for field,errors in form.errors.items():
+        for error in errors:
+            flash(error,'danger')
+
     return render_template('post_product.html', form = form)
 
 
@@ -80,5 +86,5 @@ def delete_product(product_id):
 
     db.session.delete(product_card)
     db.session.commit()
-    flash('Deleted succesfully!')
+    flash('Deleted succesfully!','success')
     return redirect(url_for('core.marketplace'))

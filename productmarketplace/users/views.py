@@ -4,12 +4,14 @@ from productmarketplace import db
 from productmarketplace.users.forms import RegisterForm, LoginForm, UpdateUserForm
 from productmarketplace.models import User, Role, Product
 from productmarketplace.users.picture_handler import add_profile_picture
+from sqlalchemy.exc import IntegrityError
 
 users = Blueprint('users',__name__)
 
 @users.route('/logout')
 @login_required
 def logout():
+    flash('You have been logged out', 'warning')
     logout_user()
     return redirect(url_for('core.index'))
 
@@ -21,17 +23,22 @@ def register():
     form.role.choices = [(role.id,role.name) for role in Role.query.all()]
 
     if form.validate_on_submit():
-        role = db.session.get(Role,form.role.data)
-        user = User(email=form.email.data,
-                    username=form.username.data,
-                    password=form.password.data,
-                    role_id= role.id
-                    )
-        
-        db.session.add(user)
-        db.session.commit()
-        print('Thanks for registration!')
-        return redirect(url_for('users.login'))
+        try:
+            role = db.session.get(Role,form.role.data)
+            user = User(email=form.email.data,
+                            username=form.username.data,
+                            password=form.password.data,
+                            role_id= role.id
+                            )
+                
+            db.session.add(user)
+            db.session.commit()
+            flash('Thanks for registration!','success')
+            return redirect(url_for('users.login'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Email or Username already registered', 'danger')
+
     return render_template('register.html', form=form)
 
 @users.route('/login', methods = ['GET', 'POST'])
@@ -42,16 +49,20 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email = form.email.data).first()
 
-        if user is not None and user.check_password(form.password.data):
+        if user is None:
+            flash('Invalid email','danger')
+        
+        elif not user.check_password(form.password.data):
+            flash('Invalid password','danger')
+        
+        else:
+                login_user(user)
 
-            login_user(user)
-    
-            next = request.args.get('next')
-            if next and next[0] == '/':
-                return redirect(next)
-            return redirect(url_for('core.index'))
-            
-    
+                next = request.args.get('next')
+                if next and next[0] == '/':
+                    return redirect(next)
+                flash('Welcome! :)','success')
+                return redirect(url_for('core.index'))
     return render_template('login.html', form = form)
 
 
@@ -75,7 +86,7 @@ def account():
         current_user.role_id = role.id
         
         db.session.commit()
-        flash('User Account Updated!')
+        flash('User Account Updated!', 'success')
         return redirect(url_for('users.account'))
     
     form.email.data = current_user.email
@@ -84,6 +95,11 @@ def account():
 
 
     profile_img = url_for('static', filename = 'profile_picture/' + current_user.profile_image )
+
+    for field,errors in form.errors.items():
+        for error in errors:
+            flash(error,'danger')
+
     return render_template('account.html', form=form, profile_img = profile_img)
 
 

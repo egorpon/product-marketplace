@@ -1,12 +1,24 @@
 {%extends 'base.html'%} {%block content%}
 <form method="POST">
-  <div class="container col-md-6">
-    {{form.hidden_tag()}}{{form.email.label}} {{form.email}} <br />
-    {{form.username.label}} {{form.username}} <br />
-    {{form.role.label}}{{form.role}} <br />
-    {{form.password.label}}{{form.password}} <br />
-    {{form.pass_confirm.label}}{{form.pass_confirm}} <br />
-    {{form.submit}}
+  <div class="container col-md-5 offset-md-auto py-5">
+    {{form.hidden_tag()}}
+    <div class="form-group">
+      {{form.email.label}} {{form.email(class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{form.username.label}} {{form.username(class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{form.role.label}}{{form.role(class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{form.password.label}}{{form.password(class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{form.pass_confirm.label}}{{form.pass_confirm(class='form-control')}}
+    </div>
+
+    {{form.submit(class='btn btn-primary')}}
   </div>
 </form>
 {%endblock%}

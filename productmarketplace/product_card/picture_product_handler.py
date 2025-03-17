@@ -6,6 +6,7 @@ def add_product_picture(pic_upload, name):
 
     filename = pic_upload.filename
     ext_name = filename.split('.')[-1]
+    
     new_file_name = str(name)+'.'+ ext_name
 
     img_path = os.path.join(current_app.root_path, 'static/product_picture', new_file_name)

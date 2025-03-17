@@ -1,8 +1,8 @@
 import os
-from flask import Flask
+from flask import Flask, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user, login_required
 
 app = Flask(__name__)
 
@@ -18,6 +18,8 @@ Migrate(app,db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'users.login'
+login_manager.login_message_category = "warning"
+
 
 from productmarketplace.core.views import core
 from productmarketplace.users.views import users
