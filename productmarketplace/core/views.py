@@ -15,19 +15,15 @@ def info_page():
 @core.route('/marketplace', methods=['GET', 'POST'])
 @login_required
 def marketplace():
-    page = request.args.get('page', 1, type=int)
-
+    page = request.args.get('page',1,type=int)
     all_products = Product.query.order_by(Product.date.asc()).all()
-    authors = {product.author.username for product in all_products}
+    authors  = set(product.author.username for product in all_products)
 
-    selected_authors = request.form.getlist('author')
-
-    if selected_authors:
-        product_cards = Product.query.join(User).filter(User.username.in_(selected_authors)) \
-                                     .order_by(Product.date.asc()) \
-                                     .paginate(page=page, per_page=8)
+    selected_author = request.form.getlist('author')
+    
+    if selected_author:
+        product_cards = Product.query.join(User).filter(User.username.in_(selected_author)).order_by(Product.date.asc()).paginate(page=page, per_page=8)
     else:
         product_cards = Product.query.order_by(Product.date.asc()).paginate(page=page, per_page=8)
-
     return render_template('marketplace.html', product_cards=product_cards, authors=authors)
 
