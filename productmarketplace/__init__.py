@@ -7,14 +7,16 @@ import stripe
 from dotenv import load_dotenv, dotenv_values
 
 
-config = dotenv_values('.env')
+# config = dotenv_values('.env')
+load_dotenv()
 print(config)
 
 app = Flask(__name__)
 
-STRIPE_PUBLIC_KEY=config.get('STRIPE_PUBLIC_KEY','')
-STRIPE_SECRET_KEY= config.get('STRIPE_SECRET_KEY','')
-
+# STRIPE_PUBLIC_KEY=config.get('STRIPE_PUBLIC_KEY','')
+# STRIPE_SECRET_KEY= config.get('STRIPE_SECRET_KEY','')
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 
 stripe.api_key = STRIPE_SECRET_KEY
 
