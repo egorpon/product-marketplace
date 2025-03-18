@@ -7,7 +7,6 @@ import stripe
 from dotenv import load_dotenv, dotenv_values
 
 
-# config = dotenv_values('.env')
 load_dotenv()
 
 app = Flask(__name__)
