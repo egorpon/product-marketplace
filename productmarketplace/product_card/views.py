@@ -89,7 +89,7 @@ def update(product_id):
         abort(403)
 
 
-    form = ProductForm()
+    form = ProductForm(is_update = True)
     
     if form.validate_on_submit():
         if form.product_picture.data:
@@ -101,6 +101,7 @@ def update(product_id):
         product_card.price = form.price.data
         product_card.description = form.description.data
         db.session.commit()
+        flash('Product Updated Successfully!', 'success')
         return redirect(url_for('product.products', product_id=product_card.id))
 
 
@@ -108,7 +109,6 @@ def update(product_id):
     form.title.data = product_card.name
     form.description.data = product_card.description
     form.price.data = product_card.price
-
     return render_template('post_product.html', form=form)
 
 
