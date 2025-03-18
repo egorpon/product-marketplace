@@ -12,8 +12,8 @@ print(config)
 
 app = Flask(__name__)
 
-STRIPE_PUBLIC_KEY=config.get('STRIPE_PUBLIC_KEY','ds')
-STRIPE_SECRET_KEY= config.get('STRIPE_SECRET_KEY','da')
+STRIPE_PUBLIC_KEY=config.get('STRIPE_PUBLIC_KEY','')
+STRIPE_SECRET_KEY= config.get('STRIPE_SECRET_KEY','')
 
 
 stripe.api_key = STRIPE_SECRET_KEY
