@@ -9,7 +9,6 @@ from dotenv import load_dotenv, dotenv_values
 
 # config = dotenv_values('.env')
 load_dotenv()
-print(config)
 
 app = Flask(__name__)
 
