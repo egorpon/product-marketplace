@@ -66,7 +66,7 @@ def create_checkout_session(product_id):
             'description':f'Purchasing {product.name}',
             'tax_code': 'txcd_99999999'	
             },
-        'unit_amount':int(product.price)*100},
+        'unit_amount_decimal':product.price*100},
         
         'quantity':1
         
